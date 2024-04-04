@@ -1,4 +1,8 @@
-from flask import Flask, render_template
+from flask import Flask, jsonify, render_template, request
+
+from modules.lexer import build_lexer
+from modules.parser import run_parser
+
 
 # Create an instance of the Flask class. This instance will be the WSGI application.
 app = Flask(__name__)
@@ -6,9 +10,19 @@ app = Flask(__name__)
 # Define a route through the app.route decorator. In this case, the route is the root ("/").
 @app.route("/")
 def hello_world():
+    
     return render_template('index.html')
 
-# Check if the executed script is the main program and run the Flask application.
-# The debug=True argument provides a debug information page if there's an error and auto-reloads the server on code changes.
+@app.route("/run", methods=['POST'])
+def run_compiler():
+    data = request.json
+    
+    tokens, error = build_lexer(code=data['programData'])
+
+    parse_result, parse_error = run_parser(code=data['programData'])
+        
+    return jsonify({'lexerResult': {'tokens': "Tokens {}".format(str(tokens)), 'error': error}, 'parserResult': {'result': parse_result, 'error': parse_error} })
+
+
 if __name__ == "__main__":
     app.run(debug=True)

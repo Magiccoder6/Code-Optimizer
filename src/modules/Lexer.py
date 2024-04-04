@@ -1,39 +1,67 @@
-##########################
-#TOKENS
-##########################
-TT_PLUS = 'TT_PLUS'
-TOKEN_TYPE_INT = 'TT_INT'
-TOKEN_TYPE_FLOAT = 'FLOAT'
+import ply.lex as lex
 
-class Token:
-    def __init__(self, type, value) -> None:
-        self.type = type
-        self.value = value
-    
-    def __repr__(self) -> str:
-        if self.value: return f'{self.type}:{self.value}'
-        return f'{self.value}'
+# List of token names.   This is always required
+tokens = (
+   'NUMBER',
+   'NAME',
+   'PLUS',
+   'MINUS',
+   'COMMA',
+   'COLON',
+   'TIMES',
+   'DIVIDE',
+   'LPAREN',
+   'RPAREN',
+)
 
-##########################
-#LEXER
-##########################
-class Lexer:
-    def __init__(self, text) -> None:
-        self.text = text
-        self.pos = -1
-        self.current_char = None
-        self.advance()
+# Regular expression rules for simple tokens
+t_PLUS    = r'\+'
+t_MINUS   = r'-'
+t_TIMES   = r'\*'
+t_DIVIDE  = r'/'
+t_LPAREN  = r'\('
+t_RPAREN  = r'\)'
+t_COMMA = r','
+t_COLON = r':'
+
+# A regular expression rule with some action code
+def t_NUMBER(t):
+    r'\d+'
+    t.value = int(t.value)    
+    return t
+
+# Define a rule so we can track line numbers
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
+
+# A string containing ignored characters (spaces and tabs)
+t_ignore  = ' \t'
+
+# Error handling rule
+def t_error(t):
+    t.lexer.skip(1)
+    raise Exception("Illegal character '%s'" % t.value[0])
+
+# Define a rule for names (identifiers)
+def t_NAME(t):
+    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    return t
+
+def build_lexer(code):
+    # Build the lexer
+    tks = []
+    error = 'None'
+    try:
+        lexer = lex.lex()
+        lexer.input(code)
+        while True:
+            tok = lexer.token()
+            if not tok: 
+                break  
+            tks.append(tok)
+    except Exception as e:
+        error = e.__str__()
+        tks = None
     
-    def advance(self):
-        self.pos += 1
-        self.current_char = self.text[self.pos] if self.pos < len(self.text) else None
-    
-    def make_tokens(self):
-        tokens = []
-        while self.current_char != None:
-            if self.current_char in ' \t':
-                self.advance()
-            elif self.current_char == '+':
-                tokens.append(TT_PLUS)
-                self.advance()
-        return tokens
+    return [tks, error]

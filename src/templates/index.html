@@ -15,7 +15,8 @@
                                 <option selected>Select a programming language</option>
                                 <option value="python">Python</option>
                             </select>
-                            <button onclick="getInputStrings()" class="btn btn-outline-success" type="submit">Run</button>
+                            <button onclick="runCompiler()" class="btn btn-outline-success" type="submit">Run</button>
+                            <button onclick="clearConsole()" class="btn btn-outline-warning" type="submit">Clear Console</button>
                           </div>
                     </div>
                 </div>
@@ -31,7 +32,13 @@
                 <div class="row border m-2 rounded bg-light" style="height: 6em;"><b>4. Code Generation</b></div>
               </div>
               <div class="row">
-                <div class="col text-white rounded m-2" style="height: 40vh; width: 100%; background-color: black;">Console</div>
+                <div  class="col text-white rounded m-2" style="height: 40vh; max-height: 40vh; overflow: auto; width: 100%; background-color: black;">
+                  Console
+                  <hr>
+                  <div id="console">
+                    
+                  </div>
+                </div>
               </div>
             </div>
             
