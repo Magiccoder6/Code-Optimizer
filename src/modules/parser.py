@@ -14,7 +14,7 @@ def p_program(p):
 
 def p_function_def(p):
     '''function : DEF_KEYWORD NAME LPAREN RPAREN COLON'''
-    p[0] = {'type': 'functionDefinition', 'identifier': p[1], 'function_id': f'{p[2]}{p[3]}{p[4]}{p[5]}'}
+    p[0] = {'type': 'functionDefinition', 'identifier': p[1], 'name': p[2], 'function_id': f'{p[2]}{p[3]}{p[4]}{p[5]}'}
     modify_symbol_table(table=SYMBOL_TABLE, variable_name=p[2], initial=True)
 
 def p_print_statement(p):
@@ -80,6 +80,7 @@ def p_factor_expr(p):
     'factor : LPAREN expression RPAREN'
     p[0] = p[2]
 
+
 # Error rule for syntax errors
 def p_error(p):
     if p:
@@ -101,8 +102,10 @@ def run_parser(code):
 
         while True:
             for line in lines:
-                data = parser.parse(line)
-                result.append(data)
+                print(line)
+                if line.strip() != '':
+                    data = parser.parse(line)
+                    result.append(data)
             
             #remove dead code OPTIMIZATION
             result, all_deadcode_removed = remove_dead_code(result, SYMBOL_TABLE)
@@ -114,11 +117,12 @@ def run_parser(code):
             if not all_deadcode_removed:
                 if lines != '':
                     lines = lines.splitlines()
+                    result = []
                 else:
                     break
             else:
                 break
-            result = []
+            
     except Exception as e:
         error = e.__str__()
         result = None

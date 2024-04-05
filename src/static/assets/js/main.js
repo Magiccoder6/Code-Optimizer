@@ -8,7 +8,46 @@ function clearConsole(){
     document.getElementById('console').innerHTML = ""
 }
 
+function decorateView(loaderId, blockId, callback, result){
+    return new Promise((resolve, reject)=>{
+        var lexLoader = document.getElementById(loaderId)
+        lexLoader.style.display = 'block'
+
+        setTimeout(function(){
+            callback()
+            var lex_block = document.getElementById(blockId)
+            lex_block.classList.remove(['bg-light'])
+            lex_block.classList.add(['bg-'+result])
+            lexLoader.style.display = 'none'
+            resolve()
+        }, 2000)
+    })
+}
+
+function clearBlocks(){
+    var lb = document.getElementById('lex_block')
+    lb.classList.remove(['bg-success'])
+    lb.classList.remove(['bg-danger'])
+    lb.classList.add(['bg-light'])
+    var syn = document.getElementById('syn_block')
+    syn.classList.remove(['bg-success'])
+    syn.classList.remove(['bg-danger'])
+    syn.classList.add(['bg-light'])
+    var opt = document.getElementById('opt_block')
+    opt.classList.remove(['bg-success'])
+    opt.classList.remove(['bg-danger'])
+    opt.classList.add(['bg-light'])
+    var gen = document.getElementById('gen_block')
+    gen.classList.remove(['bg-success'])
+    gen.classList.remove(['bg-danger'])
+    gen.classList.add(['bg-light'])
+}
+
 function runCompiler(){
+    clearBlocks()
+    var lexLoader = document.getElementById('lex_loader')
+    lexLoader.style.display = 'block'
+
     var content = String(editor.getValue()).trim();
     
     sendRequest(content).then((data)=>{
@@ -17,44 +56,64 @@ function runCompiler(){
         
         //Lexer Results
         if(data.lexerResult.error != 'None'){
-            var b = document.createElement('b')
-
-            b.innerText = data.lexerResult.error
-            b.classList.add(['text-danger'])
-            display.appendChild(b)
-        }
-        if(data.lexerResult.tokens != 'Tokens None'){
-            var b = document.createElement('b')
-            b.innerText = `----> ${data.lexerResult.tokens}`
-            b.classList.add(['text-success'])
-            display.appendChild(b)
-        }
-        
-        display.appendChild(document.createElement('br'))
-
-        if(data.lexerResult.error == 'None'){//if there is no tokenisation error show parse results
-            //Parser Results
-            if(data.parserResult.error != 'None'){
+            function modifier(){
                 var b = document.createElement('b')
-                b.innerText = data.parserResult.error
+                b.innerText = data.lexerResult.error
                 b.classList.add(['text-danger'])
                 display.appendChild(b)
             }
-            if(data.parserResult.result != 'None'){
+            decorateView('lex_loader', 'lex_block', modifier, 'danger').then(()=>{})
+        }
+        if(data.lexerResult.tokens != 'Tokens None'){
+            function modifier(){
                 var b = document.createElement('b')
-                b.innerText = `----> ${data.parserResult.result}`
+                b.innerText = `----> ${data.lexerResult.tokens}`
                 b.classList.add(['text-success'])
                 display.appendChild(b)
-
-                display.appendChild(document.createElement('hr'))
-                var b2 = document.createElement('b')
-                b2.innerText = `Optimized\n\n ${data.parserResult.optimizedCode}`
-                b2.classList.add(['text-info'])
-                display.appendChild(b2)
             }
-        }
-        
 
+            decorateView('lex_loader', 'lex_block', modifier, 'success').then(()=>{
+                display.appendChild(document.createElement('br'))
+
+                //Parser Results
+                if(data.parserResult.error != 'None'){
+                    function modifier(){
+                        var b = document.createElement('b')
+                        b.innerText = data.parserResult.error
+                        b.classList.add(['text-danger'])
+                        display.appendChild(b)
+                    }
+                    decorateView('syn_loader', 'syn_block', modifier, 'danger').then(()=>{})
+                }
+
+                if(data.parserResult.result != 'None'){
+                    function modifier(){
+                        var b = document.createElement('b')
+                        b.innerText = `----> ${data.parserResult.result}`
+                        b.classList.add(['text-success'])
+                        display.appendChild(b)
+                    }
+
+                    function modifier1(){
+                        display.appendChild(document.createElement('hr'))
+                        var b2 = document.createElement('b')
+                        b2.innerText = `Optimized\n\n ${data.parserResult.optimizedCode}`
+                        b2.classList.add(['text-info'])
+                        display.appendChild(b2)
+                    }
+
+                    decorateView('syn_loader', 'syn_block', modifier, 'success').then(()=>{
+                        decorateView('opt_loader', 'opt_block', modifier1, 'success').then(()=>{
+                            decorateView('gen_loader', 'gen_block', ()=>{}, 'success').then(()=>{
+                                consoleBody = document.getElementById('body')
+                                consoleBody.scrollTop = consoleBody.scrollHeight; //scroll to bottom
+                            })
+                        })
+                    })
+                }
+            })
+            
+        }
     }).catch((error)=>{
         console.log(error)
     })

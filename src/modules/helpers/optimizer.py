@@ -5,9 +5,12 @@ import re
 def remove_dead_code(dict:list[dict], symbol_table: list[dict]):
     for s in symbol_table:
         if(s['count']==1):
-            filtered_array = [d for d in dict if d.get('variable') != s['name']]
-            return (filtered_array, False)
-        
+            for v in dict:
+                if v.get('type') == 'variableAssignment' and v.get('variable') == s['name']:
+                    return ([d for d in dict if d != v], False)
+                if v.get('type') == 'functionDefinition' and v.get('name') == s['name']:
+                    return ([d for d in dict if d != v], False)
+                        
     return (dict, True)
 
 def generate_code_from_ast(ast:list[dict]):
@@ -38,7 +41,7 @@ def modify_symbol_table(table:list[dict], variable_name, initial:bool):
             else:
                 dictionary['count'] += 1
             return
-
+    
     table.append({'name': variable_name, 'count': 1})
 
 def print_expression(json_expr):
