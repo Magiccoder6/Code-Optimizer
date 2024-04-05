@@ -45,6 +45,12 @@ function runCompiler(){
                 b.innerText = `----> ${data.parserResult.result}`
                 b.classList.add(['text-success'])
                 display.appendChild(b)
+
+                display.appendChild(document.createElement('hr'))
+                var b2 = document.createElement('b')
+                b2.innerText = `Optimized\n\n ${data.parserResult.optimizedCode}`
+                b2.classList.add(['text-info'])
+                display.appendChild(b2)
             }
         }
         
