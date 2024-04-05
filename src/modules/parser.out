@@ -3,257 +3,537 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 Unused terminals:
 
     COMMA
+    NEWLINE
 
 Grammar
 
-Rule 0     S' -> expression
-Rule 1     expression -> expression PLUS term
-Rule 2     expression -> expression MINUS term
-Rule 3     term -> term TIMES factor
-Rule 4     term -> term DIVIDE factor
-Rule 5     expression -> term
-Rule 6     term -> factor
-Rule 7     factor -> NUMBER
-Rule 8     factor -> LPAREN expression RPAREN
-Rule 9     statement -> expression
-Rule 10    statement -> empty
-Rule 11    func -> NAME NAME LPAREN RPAREN COLON
-Rule 12    empty -> <empty>
+Rule 0     S' -> program
+Rule 1     program -> statement
+Rule 2     program -> function
+Rule 3     program -> print_statement
+Rule 4     function -> DEF_KEYWORD NAME LPAREN RPAREN COLON
+Rule 5     print_statement -> PRINT_KEYWORD LPAREN NAME RPAREN
+Rule 6     print_statement -> PRINT_KEYWORD LPAREN NUMBER RPAREN
+Rule 7     print_statement -> PRINT_KEYWORD LPAREN expression RPAREN
+Rule 8     statement -> assignment_statement
+Rule 9     statement -> expression_statement
+Rule 10    assignment_statement -> NAME EQUALS expression
+Rule 11    expression_statement -> expression
+Rule 12    expression -> expression PLUS term
+Rule 13    expression -> expression MINUS term
+Rule 14    term -> term TIMES factor
+Rule 15    term -> term DIVIDE factor
+Rule 16    expression -> term
+Rule 17    term -> factor
+Rule 18    factor -> NUMBER
+Rule 19    factor -> NAME
+Rule 20    factor -> LPAREN expression RPAREN
 
 Terminals, with rules where they appear
 
-COLON                : 11
+COLON                : 4
 COMMA                : 
-DIVIDE               : 4
-LPAREN               : 8 11
-MINUS                : 2
-NAME                 : 11 11
-NUMBER               : 7
-PLUS                 : 1
-RPAREN               : 8 11
-TIMES                : 3
+DEF_KEYWORD          : 4
+DIVIDE               : 15
+EQUALS               : 10
+LPAREN               : 4 5 6 7 20
+MINUS                : 13
+NAME                 : 4 5 10 19
+NEWLINE              : 
+NUMBER               : 6 18
+PLUS                 : 12
+PRINT_KEYWORD        : 5 6 7
+RPAREN               : 4 5 6 7 20
+TIMES                : 14
 error                : 
 
 Nonterminals, with rules where they appear
 
-empty                : 10
-expression           : 1 2 8 9 0
-factor               : 3 4 6
-func                 : 
-statement            : 
-term                 : 1 2 3 4 5
+assignment_statement : 8
+expression           : 7 10 11 12 13 20
+expression_statement : 9
+factor               : 14 15 17
+function             : 2
+print_statement      : 3
+program              : 0
+statement            : 1
+term                 : 12 13 14 15 16
 
 Parsing method: LALR
 
 state 0
 
-    (0) S' -> . expression
-    (1) expression -> . expression PLUS term
-    (2) expression -> . expression MINUS term
-    (5) expression -> . term
-    (3) term -> . term TIMES factor
-    (4) term -> . term DIVIDE factor
-    (6) term -> . factor
-    (7) factor -> . NUMBER
-    (8) factor -> . LPAREN expression RPAREN
+    (0) S' -> . program
+    (1) program -> . statement
+    (2) program -> . function
+    (3) program -> . print_statement
+    (8) statement -> . assignment_statement
+    (9) statement -> . expression_statement
+    (4) function -> . DEF_KEYWORD NAME LPAREN RPAREN COLON
+    (5) print_statement -> . PRINT_KEYWORD LPAREN NAME RPAREN
+    (6) print_statement -> . PRINT_KEYWORD LPAREN NUMBER RPAREN
+    (7) print_statement -> . PRINT_KEYWORD LPAREN expression RPAREN
+    (10) assignment_statement -> . NAME EQUALS expression
+    (11) expression_statement -> . expression
+    (12) expression -> . expression PLUS term
+    (13) expression -> . expression MINUS term
+    (16) expression -> . term
+    (14) term -> . term TIMES factor
+    (15) term -> . term DIVIDE factor
+    (17) term -> . factor
+    (18) factor -> . NUMBER
+    (19) factor -> . NAME
+    (20) factor -> . LPAREN expression RPAREN
 
-    NUMBER          shift and go to state 4
-    LPAREN          shift and go to state 5
+    DEF_KEYWORD     shift and go to state 7
+    PRINT_KEYWORD   shift and go to state 10
+    NAME            shift and go to state 8
+    NUMBER          shift and go to state 11
+    LPAREN          shift and go to state 9
 
-    expression                     shift and go to state 1
-    term                           shift and go to state 2
-    factor                         shift and go to state 3
+    program                        shift and go to state 1
+    statement                      shift and go to state 2
+    function                       shift and go to state 3
+    print_statement                shift and go to state 4
+    assignment_statement           shift and go to state 5
+    expression_statement           shift and go to state 6
+    expression                     shift and go to state 12
+    term                           shift and go to state 13
+    factor                         shift and go to state 14
 
 state 1
 
-    (0) S' -> expression .
-    (1) expression -> expression . PLUS term
-    (2) expression -> expression . MINUS term
+    (0) S' -> program .
 
-    PLUS            shift and go to state 6
-    MINUS           shift and go to state 7
 
 
 state 2
 
-    (5) expression -> term .
-    (3) term -> term . TIMES factor
-    (4) term -> term . DIVIDE factor
+    (1) program -> statement .
 
-    PLUS            reduce using rule 5 (expression -> term .)
-    MINUS           reduce using rule 5 (expression -> term .)
-    $end            reduce using rule 5 (expression -> term .)
-    RPAREN          reduce using rule 5 (expression -> term .)
-    TIMES           shift and go to state 8
-    DIVIDE          shift and go to state 9
+    $end            reduce using rule 1 (program -> statement .)
 
 
 state 3
 
-    (6) term -> factor .
+    (2) program -> function .
 
-    TIMES           reduce using rule 6 (term -> factor .)
-    DIVIDE          reduce using rule 6 (term -> factor .)
-    PLUS            reduce using rule 6 (term -> factor .)
-    MINUS           reduce using rule 6 (term -> factor .)
-    $end            reduce using rule 6 (term -> factor .)
-    RPAREN          reduce using rule 6 (term -> factor .)
+    $end            reduce using rule 2 (program -> function .)
 
 
 state 4
 
-    (7) factor -> NUMBER .
+    (3) program -> print_statement .
 
-    TIMES           reduce using rule 7 (factor -> NUMBER .)
-    DIVIDE          reduce using rule 7 (factor -> NUMBER .)
-    PLUS            reduce using rule 7 (factor -> NUMBER .)
-    MINUS           reduce using rule 7 (factor -> NUMBER .)
-    $end            reduce using rule 7 (factor -> NUMBER .)
-    RPAREN          reduce using rule 7 (factor -> NUMBER .)
+    $end            reduce using rule 3 (program -> print_statement .)
 
 
 state 5
 
-    (8) factor -> LPAREN . expression RPAREN
-    (1) expression -> . expression PLUS term
-    (2) expression -> . expression MINUS term
-    (5) expression -> . term
-    (3) term -> . term TIMES factor
-    (4) term -> . term DIVIDE factor
-    (6) term -> . factor
-    (7) factor -> . NUMBER
-    (8) factor -> . LPAREN expression RPAREN
+    (8) statement -> assignment_statement .
 
-    NUMBER          shift and go to state 4
-    LPAREN          shift and go to state 5
+    $end            reduce using rule 8 (statement -> assignment_statement .)
 
-    expression                     shift and go to state 10
-    term                           shift and go to state 2
-    factor                         shift and go to state 3
 
 state 6
 
-    (1) expression -> expression PLUS . term
-    (3) term -> . term TIMES factor
-    (4) term -> . term DIVIDE factor
-    (6) term -> . factor
-    (7) factor -> . NUMBER
-    (8) factor -> . LPAREN expression RPAREN
+    (9) statement -> expression_statement .
 
-    NUMBER          shift and go to state 4
-    LPAREN          shift and go to state 5
+    $end            reduce using rule 9 (statement -> expression_statement .)
 
-    term                           shift and go to state 11
-    factor                         shift and go to state 3
 
 state 7
 
-    (2) expression -> expression MINUS . term
-    (3) term -> . term TIMES factor
-    (4) term -> . term DIVIDE factor
-    (6) term -> . factor
-    (7) factor -> . NUMBER
-    (8) factor -> . LPAREN expression RPAREN
+    (4) function -> DEF_KEYWORD . NAME LPAREN RPAREN COLON
 
-    NUMBER          shift and go to state 4
-    LPAREN          shift and go to state 5
+    NAME            shift and go to state 15
 
-    term                           shift and go to state 12
-    factor                         shift and go to state 3
 
 state 8
 
-    (3) term -> term TIMES . factor
-    (7) factor -> . NUMBER
-    (8) factor -> . LPAREN expression RPAREN
+    (10) assignment_statement -> NAME . EQUALS expression
+    (19) factor -> NAME .
 
-    NUMBER          shift and go to state 4
-    LPAREN          shift and go to state 5
+    EQUALS          shift and go to state 16
+    TIMES           reduce using rule 19 (factor -> NAME .)
+    DIVIDE          reduce using rule 19 (factor -> NAME .)
+    PLUS            reduce using rule 19 (factor -> NAME .)
+    MINUS           reduce using rule 19 (factor -> NAME .)
+    $end            reduce using rule 19 (factor -> NAME .)
 
-    factor                         shift and go to state 13
 
 state 9
 
-    (4) term -> term DIVIDE . factor
-    (7) factor -> . NUMBER
-    (8) factor -> . LPAREN expression RPAREN
+    (20) factor -> LPAREN . expression RPAREN
+    (12) expression -> . expression PLUS term
+    (13) expression -> . expression MINUS term
+    (16) expression -> . term
+    (14) term -> . term TIMES factor
+    (15) term -> . term DIVIDE factor
+    (17) term -> . factor
+    (18) factor -> . NUMBER
+    (19) factor -> . NAME
+    (20) factor -> . LPAREN expression RPAREN
 
-    NUMBER          shift and go to state 4
-    LPAREN          shift and go to state 5
+    NUMBER          shift and go to state 11
+    NAME            shift and go to state 18
+    LPAREN          shift and go to state 9
 
+    expression                     shift and go to state 17
+    term                           shift and go to state 13
     factor                         shift and go to state 14
 
 state 10
 
-    (8) factor -> LPAREN expression . RPAREN
-    (1) expression -> expression . PLUS term
-    (2) expression -> expression . MINUS term
+    (5) print_statement -> PRINT_KEYWORD . LPAREN NAME RPAREN
+    (6) print_statement -> PRINT_KEYWORD . LPAREN NUMBER RPAREN
+    (7) print_statement -> PRINT_KEYWORD . LPAREN expression RPAREN
 
-    RPAREN          shift and go to state 15
-    PLUS            shift and go to state 6
-    MINUS           shift and go to state 7
+    LPAREN          shift and go to state 19
 
 
 state 11
 
-    (1) expression -> expression PLUS term .
-    (3) term -> term . TIMES factor
-    (4) term -> term . DIVIDE factor
+    (18) factor -> NUMBER .
 
-    PLUS            reduce using rule 1 (expression -> expression PLUS term .)
-    MINUS           reduce using rule 1 (expression -> expression PLUS term .)
-    $end            reduce using rule 1 (expression -> expression PLUS term .)
-    RPAREN          reduce using rule 1 (expression -> expression PLUS term .)
-    TIMES           shift and go to state 8
-    DIVIDE          shift and go to state 9
+    TIMES           reduce using rule 18 (factor -> NUMBER .)
+    DIVIDE          reduce using rule 18 (factor -> NUMBER .)
+    PLUS            reduce using rule 18 (factor -> NUMBER .)
+    MINUS           reduce using rule 18 (factor -> NUMBER .)
+    $end            reduce using rule 18 (factor -> NUMBER .)
+    RPAREN          reduce using rule 18 (factor -> NUMBER .)
 
 
 state 12
 
-    (2) expression -> expression MINUS term .
-    (3) term -> term . TIMES factor
-    (4) term -> term . DIVIDE factor
+    (11) expression_statement -> expression .
+    (12) expression -> expression . PLUS term
+    (13) expression -> expression . MINUS term
 
-    PLUS            reduce using rule 2 (expression -> expression MINUS term .)
-    MINUS           reduce using rule 2 (expression -> expression MINUS term .)
-    $end            reduce using rule 2 (expression -> expression MINUS term .)
-    RPAREN          reduce using rule 2 (expression -> expression MINUS term .)
-    TIMES           shift and go to state 8
-    DIVIDE          shift and go to state 9
+    $end            reduce using rule 11 (expression_statement -> expression .)
+    PLUS            shift and go to state 20
+    MINUS           shift and go to state 21
 
 
 state 13
 
-    (3) term -> term TIMES factor .
+    (16) expression -> term .
+    (14) term -> term . TIMES factor
+    (15) term -> term . DIVIDE factor
 
-    TIMES           reduce using rule 3 (term -> term TIMES factor .)
-    DIVIDE          reduce using rule 3 (term -> term TIMES factor .)
-    PLUS            reduce using rule 3 (term -> term TIMES factor .)
-    MINUS           reduce using rule 3 (term -> term TIMES factor .)
-    $end            reduce using rule 3 (term -> term TIMES factor .)
-    RPAREN          reduce using rule 3 (term -> term TIMES factor .)
+    PLUS            reduce using rule 16 (expression -> term .)
+    MINUS           reduce using rule 16 (expression -> term .)
+    $end            reduce using rule 16 (expression -> term .)
+    RPAREN          reduce using rule 16 (expression -> term .)
+    TIMES           shift and go to state 22
+    DIVIDE          shift and go to state 23
 
 
 state 14
 
-    (4) term -> term DIVIDE factor .
+    (17) term -> factor .
 
-    TIMES           reduce using rule 4 (term -> term DIVIDE factor .)
-    DIVIDE          reduce using rule 4 (term -> term DIVIDE factor .)
-    PLUS            reduce using rule 4 (term -> term DIVIDE factor .)
-    MINUS           reduce using rule 4 (term -> term DIVIDE factor .)
-    $end            reduce using rule 4 (term -> term DIVIDE factor .)
-    RPAREN          reduce using rule 4 (term -> term DIVIDE factor .)
+    TIMES           reduce using rule 17 (term -> factor .)
+    DIVIDE          reduce using rule 17 (term -> factor .)
+    PLUS            reduce using rule 17 (term -> factor .)
+    MINUS           reduce using rule 17 (term -> factor .)
+    $end            reduce using rule 17 (term -> factor .)
+    RPAREN          reduce using rule 17 (term -> factor .)
 
 
 state 15
 
-    (8) factor -> LPAREN expression RPAREN .
+    (4) function -> DEF_KEYWORD NAME . LPAREN RPAREN COLON
 
-    TIMES           reduce using rule 8 (factor -> LPAREN expression RPAREN .)
-    DIVIDE          reduce using rule 8 (factor -> LPAREN expression RPAREN .)
-    PLUS            reduce using rule 8 (factor -> LPAREN expression RPAREN .)
-    MINUS           reduce using rule 8 (factor -> LPAREN expression RPAREN .)
-    $end            reduce using rule 8 (factor -> LPAREN expression RPAREN .)
-    RPAREN          reduce using rule 8 (factor -> LPAREN expression RPAREN .)
+    LPAREN          shift and go to state 24
 
+
+state 16
+
+    (10) assignment_statement -> NAME EQUALS . expression
+    (12) expression -> . expression PLUS term
+    (13) expression -> . expression MINUS term
+    (16) expression -> . term
+    (14) term -> . term TIMES factor
+    (15) term -> . term DIVIDE factor
+    (17) term -> . factor
+    (18) factor -> . NUMBER
+    (19) factor -> . NAME
+    (20) factor -> . LPAREN expression RPAREN
+
+    NUMBER          shift and go to state 11
+    NAME            shift and go to state 18
+    LPAREN          shift and go to state 9
+
+    expression                     shift and go to state 25
+    term                           shift and go to state 13
+    factor                         shift and go to state 14
+
+state 17
+
+    (20) factor -> LPAREN expression . RPAREN
+    (12) expression -> expression . PLUS term
+    (13) expression -> expression . MINUS term
+
+    RPAREN          shift and go to state 26
+    PLUS            shift and go to state 20
+    MINUS           shift and go to state 21
+
+
+state 18
+
+    (19) factor -> NAME .
+
+    TIMES           reduce using rule 19 (factor -> NAME .)
+    DIVIDE          reduce using rule 19 (factor -> NAME .)
+    RPAREN          reduce using rule 19 (factor -> NAME .)
+    PLUS            reduce using rule 19 (factor -> NAME .)
+    MINUS           reduce using rule 19 (factor -> NAME .)
+    $end            reduce using rule 19 (factor -> NAME .)
+
+
+state 19
+
+    (5) print_statement -> PRINT_KEYWORD LPAREN . NAME RPAREN
+    (6) print_statement -> PRINT_KEYWORD LPAREN . NUMBER RPAREN
+    (7) print_statement -> PRINT_KEYWORD LPAREN . expression RPAREN
+    (12) expression -> . expression PLUS term
+    (13) expression -> . expression MINUS term
+    (16) expression -> . term
+    (14) term -> . term TIMES factor
+    (15) term -> . term DIVIDE factor
+    (17) term -> . factor
+    (18) factor -> . NUMBER
+    (19) factor -> . NAME
+    (20) factor -> . LPAREN expression RPAREN
+
+    NAME            shift and go to state 27
+    NUMBER          shift and go to state 28
+    LPAREN          shift and go to state 9
+
+    expression                     shift and go to state 29
+    term                           shift and go to state 13
+    factor                         shift and go to state 14
+
+state 20
+
+    (12) expression -> expression PLUS . term
+    (14) term -> . term TIMES factor
+    (15) term -> . term DIVIDE factor
+    (17) term -> . factor
+    (18) factor -> . NUMBER
+    (19) factor -> . NAME
+    (20) factor -> . LPAREN expression RPAREN
+
+    NUMBER          shift and go to state 11
+    NAME            shift and go to state 18
+    LPAREN          shift and go to state 9
+
+    term                           shift and go to state 30
+    factor                         shift and go to state 14
+
+state 21
+
+    (13) expression -> expression MINUS . term
+    (14) term -> . term TIMES factor
+    (15) term -> . term DIVIDE factor
+    (17) term -> . factor
+    (18) factor -> . NUMBER
+    (19) factor -> . NAME
+    (20) factor -> . LPAREN expression RPAREN
+
+    NUMBER          shift and go to state 11
+    NAME            shift and go to state 18
+    LPAREN          shift and go to state 9
+
+    term                           shift and go to state 31
+    factor                         shift and go to state 14
+
+state 22
+
+    (14) term -> term TIMES . factor
+    (18) factor -> . NUMBER
+    (19) factor -> . NAME
+    (20) factor -> . LPAREN expression RPAREN
+
+    NUMBER          shift and go to state 11
+    NAME            shift and go to state 18
+    LPAREN          shift and go to state 9
+
+    factor                         shift and go to state 32
+
+state 23
+
+    (15) term -> term DIVIDE . factor
+    (18) factor -> . NUMBER
+    (19) factor -> . NAME
+    (20) factor -> . LPAREN expression RPAREN
+
+    NUMBER          shift and go to state 11
+    NAME            shift and go to state 18
+    LPAREN          shift and go to state 9
+
+    factor                         shift and go to state 33
+
+state 24
+
+    (4) function -> DEF_KEYWORD NAME LPAREN . RPAREN COLON
+
+    RPAREN          shift and go to state 34
+
+
+state 25
+
+    (10) assignment_statement -> NAME EQUALS expression .
+    (12) expression -> expression . PLUS term
+    (13) expression -> expression . MINUS term
+
+    $end            reduce using rule 10 (assignment_statement -> NAME EQUALS expression .)
+    PLUS            shift and go to state 20
+    MINUS           shift and go to state 21
+
+
+state 26
+
+    (20) factor -> LPAREN expression RPAREN .
+
+    TIMES           reduce using rule 20 (factor -> LPAREN expression RPAREN .)
+    DIVIDE          reduce using rule 20 (factor -> LPAREN expression RPAREN .)
+    PLUS            reduce using rule 20 (factor -> LPAREN expression RPAREN .)
+    MINUS           reduce using rule 20 (factor -> LPAREN expression RPAREN .)
+    $end            reduce using rule 20 (factor -> LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 20 (factor -> LPAREN expression RPAREN .)
+
+
+state 27
+
+    (5) print_statement -> PRINT_KEYWORD LPAREN NAME . RPAREN
+    (19) factor -> NAME .
+
+  ! shift/reduce conflict for RPAREN resolved as shift
+    RPAREN          shift and go to state 35
+    TIMES           reduce using rule 19 (factor -> NAME .)
+    DIVIDE          reduce using rule 19 (factor -> NAME .)
+    PLUS            reduce using rule 19 (factor -> NAME .)
+    MINUS           reduce using rule 19 (factor -> NAME .)
+
+  ! RPAREN          [ reduce using rule 19 (factor -> NAME .) ]
+
+
+state 28
+
+    (6) print_statement -> PRINT_KEYWORD LPAREN NUMBER . RPAREN
+    (18) factor -> NUMBER .
+
+  ! shift/reduce conflict for RPAREN resolved as shift
+    RPAREN          shift and go to state 36
+    TIMES           reduce using rule 18 (factor -> NUMBER .)
+    DIVIDE          reduce using rule 18 (factor -> NUMBER .)
+    PLUS            reduce using rule 18 (factor -> NUMBER .)
+    MINUS           reduce using rule 18 (factor -> NUMBER .)
+
+  ! RPAREN          [ reduce using rule 18 (factor -> NUMBER .) ]
+
+
+state 29
+
+    (7) print_statement -> PRINT_KEYWORD LPAREN expression . RPAREN
+    (12) expression -> expression . PLUS term
+    (13) expression -> expression . MINUS term
+
+    RPAREN          shift and go to state 37
+    PLUS            shift and go to state 20
+    MINUS           shift and go to state 21
+
+
+state 30
+
+    (12) expression -> expression PLUS term .
+    (14) term -> term . TIMES factor
+    (15) term -> term . DIVIDE factor
+
+    PLUS            reduce using rule 12 (expression -> expression PLUS term .)
+    MINUS           reduce using rule 12 (expression -> expression PLUS term .)
+    $end            reduce using rule 12 (expression -> expression PLUS term .)
+    RPAREN          reduce using rule 12 (expression -> expression PLUS term .)
+    TIMES           shift and go to state 22
+    DIVIDE          shift and go to state 23
+
+
+state 31
+
+    (13) expression -> expression MINUS term .
+    (14) term -> term . TIMES factor
+    (15) term -> term . DIVIDE factor
+
+    PLUS            reduce using rule 13 (expression -> expression MINUS term .)
+    MINUS           reduce using rule 13 (expression -> expression MINUS term .)
+    $end            reduce using rule 13 (expression -> expression MINUS term .)
+    RPAREN          reduce using rule 13 (expression -> expression MINUS term .)
+    TIMES           shift and go to state 22
+    DIVIDE          shift and go to state 23
+
+
+state 32
+
+    (14) term -> term TIMES factor .
+
+    TIMES           reduce using rule 14 (term -> term TIMES factor .)
+    DIVIDE          reduce using rule 14 (term -> term TIMES factor .)
+    PLUS            reduce using rule 14 (term -> term TIMES factor .)
+    MINUS           reduce using rule 14 (term -> term TIMES factor .)
+    $end            reduce using rule 14 (term -> term TIMES factor .)
+    RPAREN          reduce using rule 14 (term -> term TIMES factor .)
+
+
+state 33
+
+    (15) term -> term DIVIDE factor .
+
+    TIMES           reduce using rule 15 (term -> term DIVIDE factor .)
+    DIVIDE          reduce using rule 15 (term -> term DIVIDE factor .)
+    PLUS            reduce using rule 15 (term -> term DIVIDE factor .)
+    MINUS           reduce using rule 15 (term -> term DIVIDE factor .)
+    $end            reduce using rule 15 (term -> term DIVIDE factor .)
+    RPAREN          reduce using rule 15 (term -> term DIVIDE factor .)
+
+
+state 34
+
+    (4) function -> DEF_KEYWORD NAME LPAREN RPAREN . COLON
+
+    COLON           shift and go to state 38
+
+
+state 35
+
+    (5) print_statement -> PRINT_KEYWORD LPAREN NAME RPAREN .
+
+    $end            reduce using rule 5 (print_statement -> PRINT_KEYWORD LPAREN NAME RPAREN .)
+
+
+state 36
+
+    (6) print_statement -> PRINT_KEYWORD LPAREN NUMBER RPAREN .
+
+    $end            reduce using rule 6 (print_statement -> PRINT_KEYWORD LPAREN NUMBER RPAREN .)
+
+
+state 37
+
+    (7) print_statement -> PRINT_KEYWORD LPAREN expression RPAREN .
+
+    $end            reduce using rule 7 (print_statement -> PRINT_KEYWORD LPAREN expression RPAREN .)
+
+
+state 38
+
+    (4) function -> DEF_KEYWORD NAME LPAREN RPAREN COLON .
+
+    $end            reduce using rule 4 (function -> DEF_KEYWORD NAME LPAREN RPAREN COLON .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for RPAREN in state 27 resolved as shift
+WARNING: shift/reduce conflict for RPAREN in state 28 resolved as shift

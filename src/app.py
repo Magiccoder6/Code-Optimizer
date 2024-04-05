@@ -19,9 +19,10 @@ def run_compiler():
     
     tokens, error = build_lexer(code=data['programData'])
 
-    parse_result, parse_error = run_parser(code=data['programData'])
+    parse_result, parse_error, optimized_code = run_parser(code=data['programData'])
+    print(optimized_code)
         
-    return jsonify({'lexerResult': {'tokens': "Tokens {}".format(str(tokens)), 'error': error}, 'parserResult': {'result': parse_result, 'error': parse_error} })
+    return jsonify({'lexerResult': {'tokens': "Tokens {}".format(str(tokens)), 'error': error}, 'parserResult': {'result': str(parse_result), 'error': parse_error} })
 
 
 if __name__ == "__main__":

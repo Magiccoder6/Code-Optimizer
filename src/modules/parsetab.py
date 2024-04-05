@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'COLON COMMA DIVIDE LPAREN MINUS NAME NUMBER PLUS RPAREN TIMESexpression : expression PLUS term\n                  | expression MINUS term\n       term       : term TIMES factor\n                  | term DIVIDE factorexpression : termterm : factorfactor : NUMBERfactor : LPAREN expression RPARENstatement : expression\n                 | emptyfunc : NAME NAME LPAREN RPAREN COLONempty :'
+_lr_signature = 'COLON COMMA DEF_KEYWORD DIVIDE EQUALS LPAREN MINUS NAME NEWLINE NUMBER PLUS PRINT_KEYWORD RPAREN TIMESprogram : statement\n                | function\n                | print_statementfunction : DEF_KEYWORD NAME LPAREN RPAREN COLONprint_statement : PRINT_KEYWORD LPAREN NAME RPAREN\n                       | PRINT_KEYWORD LPAREN NUMBER RPAREN\n                       | PRINT_KEYWORD LPAREN expression RPARENstatement : assignment_statement\n                | expression_statementassignment_statement : NAME EQUALS expressionexpression_statement : expressionexpression : expression PLUS term\n                  | expression MINUS term\n       term       : term TIMES factor\n                  | term DIVIDE factorexpression : termterm : factorfactor : NUMBERfactor : NAMEfactor : LPAREN expression RPAREN'
     
-_lr_action_items = {'NUMBER':([0,5,6,7,8,9,],[4,4,4,4,4,4,]),'LPAREN':([0,5,6,7,8,9,],[5,5,5,5,5,5,]),'$end':([1,2,3,4,11,12,13,14,15,],[0,-5,-6,-7,-1,-2,-3,-4,-8,]),'PLUS':([1,2,3,4,10,11,12,13,14,15,],[6,-5,-6,-7,6,-1,-2,-3,-4,-8,]),'MINUS':([1,2,3,4,10,11,12,13,14,15,],[7,-5,-6,-7,7,-1,-2,-3,-4,-8,]),'RPAREN':([2,3,4,10,11,12,13,14,15,],[-5,-6,-7,15,-1,-2,-3,-4,-8,]),'TIMES':([2,3,4,11,12,13,14,15,],[8,-6,-7,8,8,-3,-4,-8,]),'DIVIDE':([2,3,4,11,12,13,14,15,],[9,-6,-7,9,9,-3,-4,-8,]),}
+_lr_action_items = {'DEF_KEYWORD':([0,],[7,]),'PRINT_KEYWORD':([0,],[10,]),'NAME':([0,7,9,16,19,20,21,22,23,],[8,15,18,18,27,18,18,18,18,]),'NUMBER':([0,9,16,19,20,21,22,23,],[11,11,11,28,11,11,11,11,]),'LPAREN':([0,9,10,15,16,19,20,21,22,23,],[9,9,19,24,9,9,9,9,9,9,]),'$end':([1,2,3,4,5,6,8,11,12,13,14,18,25,26,30,31,32,33,35,36,37,38,],[0,-1,-2,-3,-8,-9,-19,-18,-11,-16,-17,-19,-10,-20,-12,-13,-14,-15,-5,-6,-7,-4,]),'EQUALS':([8,],[16,]),'TIMES':([8,11,13,14,18,26,27,28,30,31,32,33,],[-19,-18,22,-17,-19,-20,-19,-18,22,22,-14,-15,]),'DIVIDE':([8,11,13,14,18,26,27,28,30,31,32,33,],[-19,-18,23,-17,-19,-20,-19,-18,23,23,-14,-15,]),'PLUS':([8,11,12,13,14,17,18,25,26,27,28,29,30,31,32,33,],[-19,-18,20,-16,-17,20,-19,20,-20,-19,-18,20,-12,-13,-14,-15,]),'MINUS':([8,11,12,13,14,17,18,25,26,27,28,29,30,31,32,33,],[-19,-18,21,-16,-17,21,-19,21,-20,-19,-18,21,-12,-13,-14,-15,]),'RPAREN':([11,13,14,17,18,24,26,27,28,29,30,31,32,33,],[-18,-16,-17,26,-19,34,-20,35,36,37,-12,-13,-14,-15,]),'COLON':([34,],[38,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expression':([0,5,],[1,10,]),'term':([0,5,6,7,],[2,2,11,12,]),'factor':([0,5,6,7,8,9,],[3,3,3,3,13,14,]),}
+_lr_goto_items = {'program':([0,],[1,]),'statement':([0,],[2,]),'function':([0,],[3,]),'print_statement':([0,],[4,]),'assignment_statement':([0,],[5,]),'expression_statement':([0,],[6,]),'expression':([0,9,16,19,],[12,17,25,29,]),'term':([0,9,16,19,20,21,],[13,13,13,13,30,31,]),'factor':([0,9,16,19,20,21,22,23,],[14,14,14,14,14,14,32,33,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,17 +26,25 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> expression","S'",1,None,None,None),
-  ('expression -> expression PLUS term','expression',3,'p_binary_operators','parser.py',8),
-  ('expression -> expression MINUS term','expression',3,'p_binary_operators','parser.py',9),
-  ('term -> term TIMES factor','term',3,'p_binary_operators','parser.py',10),
-  ('term -> term DIVIDE factor','term',3,'p_binary_operators','parser.py',11),
-  ('expression -> term','expression',1,'p_expression_term','parser.py',22),
-  ('term -> factor','term',1,'p_term_factor','parser.py',26),
-  ('factor -> NUMBER','factor',1,'p_factor_num','parser.py',30),
-  ('factor -> LPAREN expression RPAREN','factor',3,'p_factor_expr','parser.py',34),
-  ('statement -> expression','statement',1,'p_statement','parser.py',39),
-  ('statement -> empty','statement',1,'p_statement','parser.py',40),
-  ('func -> NAME NAME LPAREN RPAREN COLON','func',5,'p_func','parser.py',49),
-  ('empty -> <empty>','empty',0,'p_empty','parser.py',52),
+  ("S' -> program","S'",1,None,None,None),
+  ('program -> statement','program',1,'p_program','parser.py',10),
+  ('program -> function','program',1,'p_program','parser.py',11),
+  ('program -> print_statement','program',1,'p_program','parser.py',12),
+  ('function -> DEF_KEYWORD NAME LPAREN RPAREN COLON','function',5,'p_function_def','parser.py',16),
+  ('print_statement -> PRINT_KEYWORD LPAREN NAME RPAREN','print_statement',4,'p_print_statement','parser.py',20),
+  ('print_statement -> PRINT_KEYWORD LPAREN NUMBER RPAREN','print_statement',4,'p_print_statement','parser.py',21),
+  ('print_statement -> PRINT_KEYWORD LPAREN expression RPAREN','print_statement',4,'p_print_statement','parser.py',22),
+  ('statement -> assignment_statement','statement',1,'p_statement','parser.py',26),
+  ('statement -> expression_statement','statement',1,'p_statement','parser.py',27),
+  ('assignment_statement -> NAME EQUALS expression','assignment_statement',3,'p_assignment_statement','parser.py',31),
+  ('expression_statement -> expression','expression_statement',1,'p_statement_expr','parser.py',44),
+  ('expression -> expression PLUS term','expression',3,'p_binary_operators','parser.py',48),
+  ('expression -> expression MINUS term','expression',3,'p_binary_operators','parser.py',49),
+  ('term -> term TIMES factor','term',3,'p_binary_operators','parser.py',50),
+  ('term -> term DIVIDE factor','term',3,'p_binary_operators','parser.py',51),
+  ('expression -> term','expression',1,'p_expression_term','parser.py',67),
+  ('term -> factor','term',1,'p_term_factor','parser.py',71),
+  ('factor -> NUMBER','factor',1,'p_factor_num','parser.py',75),
+  ('factor -> NAME','factor',1,'p_factor_name','parser.py',79),
+  ('factor -> LPAREN expression RPAREN','factor',3,'p_factor_expr','parser.py',83),
 ]
